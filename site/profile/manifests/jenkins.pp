@@ -1,11 +1,13 @@
 class profile::jenkins {
 
-  class { '::java':
-    version => '8',
+  package {'jre':
+    name   => 'java-1.8.0-openjdk.x86_64',
+    ensure => installed,
   }
 
   class { '::jenkins':
-    install_java => false
+    install_java => false,
+    require      => Package['jre'],
   }
 
   File {
