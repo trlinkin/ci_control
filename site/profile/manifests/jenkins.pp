@@ -4,7 +4,9 @@ class profile::jenkins {
     version => 'java-1.8.0-openjdk-devel',
   }
 
-  require ::jenkins
+  class { '::jenkins':
+    default_plugins => [],
+  }
 
   File {
     ensure  => file,
