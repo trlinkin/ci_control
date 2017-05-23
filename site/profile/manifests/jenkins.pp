@@ -6,6 +6,7 @@ class profile::jenkins {
   }
 
   class { '::jenkins':
+    version      => '2.62-1.1',
     install_java => false,
     require      => Package['jre'],
   }
@@ -15,20 +16,39 @@ class profile::jenkins {
     owner   => 'jenkins',
     group   => 'jenkins',
     mode    => '0755',
+ }
+
+  file { '/var/lib/jenkins/jenkins.install.UpgradeWizard.state':
+    content => '2.62',
     require => Class['jenkins::package'],
     before  => Class['jenkins::service'],
   }
 
-  file { '/var/lib/jenkins/jenkins.install.UpgradeWizard.state':
-    content => '2.0',
-  }
-
-  file { '/var/lib/jenkins/secrets/slave-to-master-security-kill-switch':
-    content => 'false',
+  file { ['/var/lib/jenkins/init.groovy.d/', '/var/lib/jenkins/secrets/']:
+    ensure => directory,
+    require => Class['jenkins::package'],
+    before  => Class['jenkins::service'],
   }
 
   file { '/var/lib/jenkins/init.groovy.d/basic-security.groovy':
     source => 'puppet:///modules/profile/jenkins_install',
+    require => Class['jenkins::package'],
+    before  => Class['jenkins::service'],
+  }
+
+  file { '/var/lib/jenkins/secrets/slave-to-master-security-kill-switch':
+    content => 'false',
+    require => Class['jenkins'],
+  }
+
+  file_line { 'no_install_wizard':
+    ensure  => 'present',
+    path    => '/etc/sysconfig/jenkins',
+    line    => 'JENKINS_JAVA_OPTIONS="-Djava.awt.headless=true -Djenkins.install.runSetupWizard=false"',
+    match   => 'JENKINS_JAVA_OPTIONS="-Djava.awt.headless=true"',
+    replace => true,
+    before  => Class['jenkins::service'],
+    require => Class['jenkins::package'],
   }
 
   include ::git
