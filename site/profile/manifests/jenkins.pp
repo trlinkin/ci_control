@@ -1,10 +1,12 @@
 class profile::jenkins {
 
   class { '::java':
-    version => 'java-1.8.0-openjdk-devel',
+    version => '8',
   }
 
-  class { '::jenkins': }
+  class { '::jenkins':
+    install_java => false
+  }
 
   File {
     ensure  => file,
