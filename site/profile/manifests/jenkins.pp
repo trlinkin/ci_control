@@ -11,7 +11,7 @@ class profile::jenkins {
     owner   => 'jenkins',
     group   => 'jenkins',
     mode    => '0755',
-    require => Class['jenkins::package'],
+    #    require => Class['jenkins::package'],
     before  => Class['jenkins::service'],
   }
 
