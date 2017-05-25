@@ -66,7 +66,7 @@ class profile::jenkins {
     tries       => '3',
     try_sleep   => '5',
     refreshonly => true,
-    subscribe   => Class['jenkins::package'],
+    subscribe   => Package['jenkins'],
   }
 
   ## Tell Jenkins to reload configuratios without restarting
