@@ -3,7 +3,7 @@ class example(
 ){
 
   file{ '/tmp/example_file':
-    content => epp('example.epp'),
+    content => epp('example/example.epp'),
   }
 
 }
